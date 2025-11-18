@@ -12,6 +12,7 @@ export const App: React.FC = () => {
   const [error, setError] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
 
+  // Load todos from API
   const loadTodos = async () => {
     setError('');
     setIsLoading(true);
@@ -31,6 +32,7 @@ export const App: React.FC = () => {
     loadTodos();
   }, []);
 
+  // Auto-hide error after 3 seconds
   useEffect(() => {
     if (!error) {
       return;
@@ -64,15 +66,15 @@ export const App: React.FC = () => {
 
       <div className="todoapp__content">
         <header className="todoapp__header">
-          {/* this button should have `active` class only if all todos are completed */}
           <button
             type="button"
-            className="todoapp__toggle-all active"
+            className={classNames('todoapp__toggle-all', {
+              active: todos.length > 0 && activeTodos === 0,
+            })}
             data-cy="ToggleAllButton"
             disabled
           />
 
-          {/* Add a todo on form submit */}
           <form>
             <input
               data-cy="NewTodoField"
@@ -84,25 +86,22 @@ export const App: React.FC = () => {
           </form>
         </header>
 
+        {/* Global loader overlay */}
         {isLoading && (
           <div data-cy="TodoLoader" className="modal overlay is-active">
-            <div
-              className="modal-background
-              has-background-white-ter"
-            />
+            <div className="modal-background has-background-white-ter" />
             <div className="loader" />
           </div>
         )}
 
+        {/* Todo list */}
         {todos.length > 0 && (
           <section className="todoapp__main" data-cy="TodoList">
             {filteredTodos.map(todo => (
               <div
                 data-cy="Todo"
                 key={todo.id}
-                className={classNames('todo', {
-                  completed: todo.completed,
-                })}
+                className={classNames('todo', { completed: todo.completed })}
               >
                 <label className="todo__status-label">
                   <input
@@ -130,6 +129,7 @@ export const App: React.FC = () => {
           </section>
         )}
 
+        {/* Footer */}
         {todos.length > 0 && (
           <footer className="todoapp__footer" data-cy="Footer">
             <span className="todo-count" data-cy="TodosCounter">
@@ -147,7 +147,6 @@ export const App: React.FC = () => {
               >
                 All
               </a>
-
               <a
                 href="#/active"
                 className={classNames('filter__link', {
@@ -158,7 +157,6 @@ export const App: React.FC = () => {
               >
                 Active
               </a>
-
               <a
                 href="#/completed"
                 className={classNames('filter__link', {
@@ -183,8 +181,7 @@ export const App: React.FC = () => {
         )}
       </div>
 
-      {/* DON'T use conditional rendering to hide the notification */}
-      {/* Add the 'hidden' class to hide the message smoothly */}
+      {/* Error notification */}
       <div
         data-cy="ErrorNotification"
         className={classNames(
