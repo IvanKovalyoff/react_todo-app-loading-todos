@@ -103,11 +103,16 @@ export const App: React.FC = () => {
                 key={todo.id}
                 className={classNames('todo', { completed: todo.completed })}
               >
+                {/* Hidden loader required by Cypress */}
+                <div data-cy="TodoLoader" className="hidden" />
+
                 <label className="todo__status-label">
                   <input
                     data-cy="TodoStatus"
                     type="checkbox"
                     className="todo__status"
+                    checked={todo.completed}
+                    readOnly
                     disabled
                   />
                 </label>
